@@ -738,8 +738,8 @@ def registro_view(request):
     - Crea usuario inactivo
     - Lo asocia a la empresa por defecto: Rutek Tours
     - Genera código de verificación
-    - Envía correo HTML
-    - Guarda el ID del usuario en sesión
+    - Intenta enviar correo HTML.
+      Si el correo falla, activa al usuario directamente (modo demo).
     """
     if request.method == 'POST':
         nombre = request.POST.get('nombre', '').strip()
@@ -796,7 +796,6 @@ def registro_view(request):
 
         # Enviar correo con plantilla HTML
         asunto = "Código de verificación - Rutek"
-
         context = {
             'nombre': nombre,
             'codigo': codigo,
@@ -805,7 +804,6 @@ def registro_view(request):
 
         html_body = render_to_string('email_verificacion.html', context)
         text_body = strip_tags(html_body)
-
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', settings.EMAIL_HOST_USER)
 
         email_message = EmailMultiAlternatives(
@@ -815,13 +813,30 @@ def registro_view(request):
             to=[email],
         )
         email_message.attach_alternative(html_body, "text/html")
-        email_message.send()
 
-        # Guardar usuario pendiente en sesión
-        request.session['pending_user_id'] = user.id
+        try:
+            # Puede fallar en Render si hay problemas con Gmail
+            email_message.send()
 
-        messages.success(request, 'Te enviamos un código de verificación a tu correo.')
-        return redirect('verificacion')
+            # Guardar usuario pendiente en sesión SOLO si se envió el correo
+            request.session['pending_user_id'] = user.id
+            messages.success(request, 'Te enviamos un código de verificación a tu correo.')
+            return redirect('verificacion')
+
+        except Exception as e:
+            # Se verá en los logs de Render
+            print(f"Error enviando correo de verificación: {e}")
+
+            # Activamos al usuario directamente para no bloquear la app (modo demo)
+            user.is_active = True
+            user.save()
+
+            messages.warning(
+                request,
+                'Tu usuario se creó correctamente, pero no pudimos enviar el correo de '
+                'verificación. Por ser una demo, tu cuenta fue activada automáticamente.'
+            )
+            return redirect('login')
 
     return render(request, 'registro.html')
 
@@ -1001,3 +1016,4 @@ def password_reset_confirm(request):
         return redirect('login')
 
     return render(request, 'password_reset_confirm.html', {'email': user.email})
+
