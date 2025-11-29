@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if es_edicion %}Editar vehículo{% else %}Nuevo vehículo{% endif %} - Rutek Tours
+    </title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        header {
+            background-color: #1f2937; color: #fff; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header a { color: #f97316; text-decoration: none; font-weight: bold; }
+        main { padding: 20px 25px; }
+        h1 { margin-top: 0; }
+
+        .card {
+            background-color: #fff; padding: 20px 20px 10px; border-radius: 8px;
+            max-width: 800px;
+        }
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px 20px;
+        }
+        .field { display: flex; flex-direction: column; font-size: 14px; }
+        label { font-weight: bold; margin-bottom: 4px; }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db;
+        }
+        .field-inline { flex-direction: row; align-items: center; gap: 6px; }
+
+        .actions {
+            margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .btn-primary {
+            padding: 8px 16px; background-color: #2563eb; color: #fff;
+            border-radius: 4px; border: none; cursor: pointer; font-weight: bold;
+        }
+        .btn-secondary {
+            padding: 8px 16px; background-color: #6b7280; color: #fff;
+            border-radius: 4px; border: none; cursor: pointer; font-weight: bold;
+            text-decoration: none; display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <strong>Rutek Tours</strong> –
+        {% if es_edicion %}Editar vehículo{% else %}Nuevo vehículo{% endif %}
+    </div>
+    <div>
+        <a href="{% url 'vehiculos_lista' %}">Volver a la lista</a>
+    </div>
+</header>
+
+<main>
+    <h1>
+        {% if es_edicion %}
+            Editar vehículo {% if vehiculo %}– {{ vehiculo.placa }}{% endif %}
+        {% else %}
+            Registrar nuevo vehículo
+        {% endif %}
+    </h1>
+
+    <section class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="{{ form.placa.id_for_label }}">Placa</label>
+                {{ form.placa }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.marca.id_for_label }}">Marca</label>
+                {{ form.marca }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.linea.id_for_label }}">Línea</label>
+                {{ form.linea }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.modelo.id_for_label }}">Modelo (año)</label>
+                {{ form.modelo }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.capacidad_pasajeros.id_for_label }}">Capacidad pasajeros</label>
+                {{ form.capacidad_pasajeros }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.soat_vencimiento.id_for_label }}">Vencimiento SOAT</label>
+                {{ form.soat_vencimiento }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.tecnomecanica_vencimiento.id_for_label }}">Vencimiento tecnomecánica</label>
+                {{ form.tecnomecanica_vencimiento }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.poliza_contractual_vencimiento.id_for_label }}">Póliza contractual</label>
+                {{ form.poliza_contractual_vencimiento }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.poliza_extracontractual_vencimiento.id_for_label }}">Póliza extracontractual</label>
+                {{ form.poliza_extracontractual_vencimiento }}
+            </div>
+
+            <div class="field field-inline">
+                <label for="{{ form.activo.id_for_label }}">Activo</label>
+                {{ form.activo }}
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'vehiculos_lista' %}" class="btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-primary">
+                    {% if es_edicion %}Guardar cambios{% else %}Guardar{% endif %}
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

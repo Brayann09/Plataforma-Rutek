@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Conductores - Rutek Tours</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header a {
+            color: #f97316;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px 25px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-nuevo {
+            padding: 8px 14px;
+            background-color: #16a34a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .filters {
+            margin-bottom: 15px;
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .filters form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters input[type="text"],
+        .filters select {
+            padding: 5px 8px;
+        }
+
+        .filters button {
+            padding: 6px 12px;
+            border: none;
+            background-color: #2563eb;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filters a.reset {
+            margin-left: 10px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #6b7280;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f3f4f6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-activo {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .badge-inactivo {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .acciones a {
+            margin-right: 8px;
+            font-size: 13px;
+            text-decoration: none;
+            color: #2563eb;
+        }
+
+        .acciones a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <strong>Rutek Tours</strong> – Módulo de Conductores
+    </div>
+    <div>
+        <a href="{% url 'dashboard' %}">Volver al dashboard</a>
+    </div>
+</header>
+
+<main>
+    <div class="top-bar">
+        <h1>Conductores de {{ empresa.nombre }}</h1>
+
+        <a href="{% url 'conductor_crear' %}" class="btn-nuevo">+ Nuevo conductor</a>
+    </div>
+
+    <section class="filters">
+        <form method="get">
+            <label>
+                Buscar:
+                <input type="text" name="q" placeholder="Nombre o documento" value="{{ q }}">
+            </label>
+
+            <label>
+                Estado:
+                <select name="estado">
+                    <option value="" {% if not estado %}selected{% endif %}>Todos</option>
+                    <option value="activos" {% if estado == 'activos' %}selected{% endif %}>Activos</option>
+                    <option value="inactivos" {% if estado == 'inactivos' %}selected{% endif %}>Inactivos</option>
+                </select>
+            </label>
+
+            <button type="submit">Filtrar</button>
+
+            <a href="{% url 'conductores_lista' %}" class="reset">Limpiar filtros</a>
+        </form>
+    </section>
+
+    <section>
+        {% if conductores %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Documento</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Licencia</th>
+                        <th>Vence</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>   <!-- 👈 NUEVA COLUMNA -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in conductores %}
+                        <tr>
+                            <td>{{ c.nombre_completo }}</td>
+                            <td>{{ c.tipo_documento }} {{ c.numero_documento }}</td>
+                            <td>{{ c.telefono }}</td>
+                            <td>{{ c.correo }}</td>
+                            <td>{{ c.licencia_categoria }} - {{ c.licencia_numero }}</td>
+                            <td>{{ c.licencia_vencimiento }}</td>
+                            <td>
+                                {% if c.activo %}
+                                    <span class="badge-activo">Activo</span>
+                                {% else %}
+                                    <span class="badge-inactivo">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="acciones">
+                                <a href="{% url 'conductor_detalle' c.pk %}">Ver</a>
+                                <a href="{% url 'conductor_editar' c.pk %}">Editar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay conductores registrados para esta empresa.</p>
+        {% endif %}
+    </section>
+</main>
+
+</body>
+</html>
+
+

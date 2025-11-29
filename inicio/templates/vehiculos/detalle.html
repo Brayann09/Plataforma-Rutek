@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de vehículo - Rutek Tours</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        header {
+            background-color: #1f2937; color: #fff; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header a { color: #f97316; text-decoration: none; font-weight: bold; }
+        main { padding: 20px 25px; }
+        h1 { margin-top: 0; }
+
+        .card {
+            background-color: #fff; padding: 20px; border-radius: 8px; max-width: 750px;
+        }
+        .row {
+            display: flex; justify-content: space-between; margin-bottom: 8px;
+        }
+        .label { font-weight: bold; color: #4b5563; }
+        .value { text-align: right; }
+
+        .badge-activo { color: #16a34a; font-weight: bold; }
+        .badge-inactivo { color: #b91c1c; font-weight: bold; }
+
+        .actions {
+            margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;
+            font-weight: bold; text-decoration: none; display: inline-block;
+        }
+        .btn-edit { background-color: #2563eb; color: #fff; }
+        .btn-back { background-color: #6b7280; color: #fff; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><strong>Rutek Tours</strong> – Detalle de vehículo</div>
+    <div><a href="{% url 'vehiculos_lista' %}">Volver a la lista</a></div>
+</header>
+
+<main>
+    <h1>Vehículo {{ vehiculo.placa }}</h1>
+
+    <section class="card">
+        <div class="row">
+            <div class="label">Marca / Línea</div>
+            <div class="value">{{ vehiculo.marca }} {{ vehiculo.linea }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Modelo</div>
+            <div class="value">{{ vehiculo.modelo }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Capacidad pasajeros</div>
+            <div class="value">{{ vehiculo.capacidad_pasajeros }} pas</div>
+        </div>
+
+        <div class="row">
+            <div class="label">SOAT vence</div>
+            <div class="value">{{ vehiculo.soat_vencimiento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Tecnomecánica vence</div>
+            <div class="value">{{ vehiculo.tecnomecanica_vencimiento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Póliza contractual vence</div>
+            <div class="value">{{ vehiculo.poliza_contractual_vencimiento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Póliza extracontractual vence</div>
+            <div class="value">{{ vehiculo.poliza_extracontractual_vencimiento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Estado</div>
+            <div class="value">
+                {% if vehiculo.activo %}
+                    <span class="badge-activo">Activo</span>
+                {% else %}
+                    <span class="badge-inactivo">Inactivo</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Creado</div>
+            <div class="value">{{ vehiculo.creado }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Última actualización</div>
+            <div class="value">{{ vehiculo.actualizado }}</div>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'vehiculo_editar' vehiculo.pk %}" class="btn btn-edit">Editar</a>
+            <a href="{% url 'vehiculos_lista' %}" class="btn btn-back">Volver</a>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

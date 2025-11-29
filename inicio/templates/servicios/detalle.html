@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de servicio - Rutek Tours</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        header {
+            background-color: #1f2937; color: #fff; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header a { color: #f97316; text-decoration: none; font-weight: bold; }
+        main { padding: 20px 25px; }
+        h1 { margin-top: 0; }
+
+        .card {
+            background-color: #fff; padding: 20px; border-radius: 8px; max-width: 800px;
+        }
+        .row {
+            display: flex; justify-content: space-between; margin-bottom: 8px;
+        }
+        .label { font-weight: bold; color: #4b5563; }
+        .value { text-align: right; }
+
+        .estado-badge { font-weight: bold; font-size: 12px; }
+        .estado-PROGRAMADO { color: #2563eb; }
+        .estado-EN_CURSO { color: #eab308; }
+        .estado-FINALIZADO { color: #16a34a; }
+        .estado-CANCELADO { color: #b91c1c; }
+
+        .actions {
+            margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer;
+            font-weight: bold; text-decoration: none; display: inline-block;
+        }
+        .btn-edit { background-color: #2563eb; color: #fff; }
+        .btn-back { background-color: #6b7280; color: #fff; }
+        .btn-pdf  { background-color: #16a34a; color: #fff; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><strong>Rutek Tours</strong> – Detalle de servicio</div>
+    <div><a href="{% url 'servicios_lista' %}">Volver a la lista</a></div>
+</header>
+
+<main>
+    <h1>Servicio del {{ servicio.fecha_servicio }}</h1>
+
+    <section class="card">
+        <div class="row">
+            <div class="label">Origen</div>
+            <div class="value">{{ servicio.origen }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Destino</div>
+            <div class="value">{{ servicio.destino }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Tipo de servicio</div>
+            <div class="value">{{ servicio.tipo_servicio|default:"-" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Conductor</div>
+            <div class="value">{{ servicio.conductor.nombre_completo }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Vehículo</div>
+            <div class="value">{{ servicio.vehiculo.placa }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Cliente</div>
+            <div class="value">{{ servicio.cliente_nombre }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Contacto cliente</div>
+            <div class="value">{{ servicio.cliente_contacto|default:"-" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Hora inicio</div>
+            <div class="value">{{ servicio.hora_inicio|default:"-" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Hora fin</div>
+            <div class="value">{{ servicio.hora_fin|default:"-" }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Valor</div>
+            <div class="value">${{ servicio.valor|floatformat:0 }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Estado</div>
+            <div class="value">
+                <span class="estado-badge estado-{{ servicio.estado }}">
+                    {{ servicio.get_estado_display }}
+                </span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <!-- Botón para descargar FUEC en PDF -->
+            <a href="{% url 'servicio_fuec_pdf' servicio.pk %}" class="btn btn-pdf">
+                Descargar FUEC (PDF)
+            </a>
+
+            <a href="{% url 'servicio_editar' servicio.pk %}" class="btn btn-edit">Editar</a>
+            <a href="{% url 'servicios_lista' %}" class="btn btn-back">Volver</a>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

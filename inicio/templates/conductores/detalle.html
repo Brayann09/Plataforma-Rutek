@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de conductor - Rutek Tours</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header a {
+            color: #f97316;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px 25px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 700px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #4b5563;
+        }
+
+        .value {
+            text-align: right;
+        }
+
+        .badge-activo {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .badge-inactivo {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background-color: #2563eb;
+            color: #fff;
+        }
+
+        .btn-back {
+            background-color: #6b7280;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <strong>Rutek Tours</strong> – Detalle de conductor
+    </div>
+    <div>
+        <a href="{% url 'conductores_lista' %}">Volver a la lista</a>
+    </div>
+</header>
+
+<main>
+    <h1>{{ conductor.nombre_completo }}</h1>
+
+    <section class="card">
+        <div class="row">
+            <div class="label">Documento</div>
+            <div class="value">{{ conductor.tipo_documento }} {{ conductor.numero_documento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Teléfono</div>
+            <div class="value">{{ conductor.telefono }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Correo</div>
+            <div class="value">{{ conductor.correo }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Licencia</div>
+            <div class="value">{{ conductor.licencia_categoria }} - {{ conductor.licencia_numero }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Vence licencia</div>
+            <div class="value">{{ conductor.licencia_vencimiento }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Estado</div>
+            <div class="value">
+                {% if conductor.activo %}
+                    <span class="badge-activo">Activo</span>
+                {% else %}
+                    <span class="badge-inactivo">Inactivo</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Creado</div>
+            <div class="value">{{ conductor.creado }}</div>
+        </div>
+
+        <div class="row">
+            <div class="label">Última actualización</div>
+            <div class="value">{{ conductor.actualizado }}</div>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'conductor_editar' conductor.pk %}" class="btn btn-edit">Editar</a>
+            <a href="{% url 'conductores_lista' %}" class="btn btn-back">Volver</a>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

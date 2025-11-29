@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if es_edicion %}Editar servicio{% else %}Nuevo servicio{% endif %} - Rutek Tours
+    </title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        header {
+            background-color: #1f2937; color: #fff; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header a { color: #f97316; text-decoration: none; font-weight: bold; }
+        main { padding: 20px 25px; }
+        h1 { margin-top: 0; }
+
+        .card {
+            background-color: #fff; padding: 20px 20px 10px; border-radius: 8px;
+            max-width: 900px;
+        }
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px 20px;
+        }
+        .field { display: flex; flex-direction: column; font-size: 14px; }
+        label { font-weight: bold; margin-bottom: 4px; }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="time"],
+        select {
+            padding: 6px 8px; border-radius: 4px; border: 1px solid #d1d5db;
+        }
+        .actions {
+            margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .btn-primary {
+            padding: 8px 16px; background-color: #2563eb; color: #fff;
+            border-radius: 4px; border: none; cursor: pointer; font-weight: bold;
+        }
+        .btn-secondary {
+            padding: 8px 16px; background-color: #6b7280; color: #fff;
+            border-radius: 4px; border: none; cursor: pointer; font-weight: bold;
+            text-decoration: none; display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <strong>Rutek Tours</strong> –
+        {% if es_edicion %}Editar servicio{% else %}Nuevo servicio{% endif %}
+    </div>
+    <div>
+        <a href="{% url 'servicios_lista' %}">Volver a la lista</a>
+    </div>
+</header>
+
+<main>
+    <h1>
+        {% if es_edicion %}
+            Editar servicio
+        {% else %}
+            Registrar nuevo servicio
+        {% endif %}
+    </h1>
+
+    <section class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="{{ form.conductor.id_for_label }}">Conductor</label>
+                {{ form.conductor }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.vehiculo.id_for_label }}">Vehículo</label>
+                {{ form.vehiculo }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.fecha_servicio.id_for_label }}">Fecha</label>
+                {{ form.fecha_servicio }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.hora_inicio.id_for_label }}">Hora inicio</label>
+                {{ form.hora_inicio }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.hora_fin.id_for_label }}">Hora fin</label>
+                {{ form.hora_fin }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.origen.id_for_label }}">Origen</label>
+                {{ form.origen }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.destino.id_for_label }}">Destino</label>
+                {{ form.destino }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.tipo_servicio.id_for_label }}">Tipo de servicio</label>
+                {{ form.tipo_servicio }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.cliente_nombre.id_for_label }}">Cliente</label>
+                {{ form.cliente_nombre }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.cliente_contacto.id_for_label }}">Contacto cliente</label>
+                {{ form.cliente_contacto }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.valor.id_for_label }}">Valor</label>
+                {{ form.valor }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.estado.id_for_label }}">Estado</label>
+                {{ form.estado }}
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'servicios_lista' %}" class="btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-primary">
+                    {% if es_edicion %}Guardar cambios{% else %}Guardar{% endif %}
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

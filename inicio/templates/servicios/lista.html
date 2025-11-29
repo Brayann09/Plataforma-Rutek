@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicios - Rutek Tours</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; }
+        header {
+            background-color: #1f2937; color: #fff; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header a { color: #f97316; text-decoration: none; font-weight: bold; }
+        main { padding: 20px 25px; }
+        h1 { margin-top: 0; }
+
+        .toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+        .toolbar form {
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        input[type="text"], input[type="date"], select {
+            padding: 4px 6px; border-radius: 4px; border: 1px solid #d1d5db;
+            font-size: 13px;
+        }
+        button {
+            padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer;
+            font-size: 13px; font-weight: bold;
+        }
+        .btn-primary { background-color: #2563eb; color: #fff; }
+        .btn-secondary { background-color: #6b7280; color: #fff; }
+
+        table {
+            width: 100%; border-collapse: collapse; background-color: #fff;
+        }
+        th, td {
+            padding: 8px 10px; border-bottom: 1px solid #e5e7eb; font-size: 13px;
+        }
+        th { text-align: left; background-color: #f9fafb; }
+        tr:hover { background-color: #f3f4f6; }
+
+        .estado-badge { font-weight: bold; font-size: 12px; }
+        .estado-PROGRAMADO { color: #2563eb; }
+        .estado-EN_CURSO { color: #eab308; }
+        .estado-FINALIZADO { color: #16a34a; }
+        .estado-CANCELADO { color: #b91c1c; }
+
+        .link { color: #2563eb; text-decoration: none; font-size: 13px; }
+        .link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><strong>Rutek Tours</strong> – Módulo de Servicios</div>
+    <div><a href="{% url 'dashboard' %}">Volver al dashboard</a></div>
+</header>
+
+<main>
+    <div class="toolbar">
+        <h1>Servicios de {{ empresa.nombre }}</h1>
+        <a href="{% url 'servicio_crear' %}">
+            <button class="btn-primary">+ Nuevo servicio</button>
+        </a>
+    </div>
+
+    <form method="get" class="toolbar" style="margin-bottom: 15px;">
+        <div>
+            <label>Buscar:</label>
+            <input type="text" name="q" placeholder="Origen, destino o cliente" value="{{ q }}">
+        </div>
+
+        <div>
+            <label>Desde:</label>
+            <input type="date" name="desde" value="{{ desde }}">
+        </div>
+
+        <div>
+            <label>Hasta:</label>
+            <input type="date" name="hasta" value="{{ hasta }}">
+        </div>
+
+        <div>
+            <label>Conductor:</label>
+            <select name="conductor">
+                <option value="">Todos</option>
+                {% for c in conductores %}
+                    <option value="{{ c.id }}" {% if c.id|stringformat:"s" == conductor_id %}selected{% endif %}>
+                        {{ c.nombre_completo }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>Vehículo:</label>
+            <select name="vehiculo">
+                <option value="">Todos</option>
+                {% for v in vehiculos %}
+                    <option value="{{ v.id }}" {% if v.id|stringformat:"s" == vehiculo_id %}selected{% endif %}>
+                        {{ v.placa }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>Estado:</label>
+            <select name="estado">
+                <option value="">Todos</option>
+                <option value="PROGRAMADO" {% if estado == "PROGRAMADO" %}selected{% endif %}>Programado</option>
+                <option value="EN_CURSO" {% if estado == "EN_CURSO" %}selected{% endif %}>En curso</option>
+                <option value="FINALIZADO" {% if estado == "FINALIZADO" %}selected{% endif %}>Finalizado</option>
+                <option value="CANCELADO" {% if estado == "CANCELADO" %}selected{% endif %}>Cancelado</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            <a href="{% url 'servicios_lista' %}" class="btn-secondary" style="padding: 6px 10px;">Limpiar</a>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Conductor</th>
+                <th>Vehículo</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if servicios %}
+                {% for s in servicios %}
+                    <tr>
+                        <td>{{ s.fecha_servicio }}</td>
+                        <td>{{ s.origen }}</td>
+                        <td>{{ s.destino }}</td>
+                        <td>{{ s.conductor.nombre_completo }}</td>
+                        <td>{{ s.vehiculo.placa }}</td>
+                        <td>{{ s.cliente_nombre }}</td>
+                        <td>${{ s.valor|floatformat:0 }}</td>
+                        <td>
+                            <span class="estado-badge estado-{{ s.estado }}">
+                                {{ s.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'servicio_detalle' s.pk %}" class="link">Ver</a> |
+                            <a href="{% url 'servicio_editar' s.pk %}" class="link">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="9">No hay servicios registrados.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ fuec_codigo }} - FUEC</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, Helvetica, Arial, sans-serif;
+            font-size: 11px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            margin: 4px 0;
+        }
+        .small {
+            font-size: 9px;
+        }
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .tabla th, .tabla td {
+            border: 1px solid #000;
+            padding: 4px;
+            vertical-align: top;
+        }
+        .seccion-titulo {
+            background-color: #eee;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <h2>FORMATO ÚNICO DE EXTRACTO DEL CONTRATO - FUEC</h2>
+    <h3>{{ empresa.nombre }}</h3>
+    <p class="small">
+        NIT: {{ empresa.nit }}<br>
+        Dirección: {{ empresa.direccion }} - Tel: {{ empresa.telefono }}<br>
+        Correo: {{ empresa.email }}
+    </p>
+
+    <p style="text-align:right;"><strong>Código: {{ fuec_codigo }}</strong></p>
+
+    <!-- Datos del contrato / servicio -->
+    <table class="tabla">
+        <tr>
+            <th class="seccion-titulo" colspan="4">Datos del servicio</th>
+        </tr>
+        <tr>
+            <td><strong>Fecha del servicio:</strong></td>
+            <td>{{ servicio.fecha_servicio|date:"d/m/Y" }}</td>
+            <td><strong>Estado:</strong></td>
+            <td>{{ servicio.get_estado_display }}</td>
+        </tr>
+        <tr>
+            <td><strong>Origen:</strong></td>
+            <td>{{ servicio.origen }}</td>
+            <td><strong>Destino:</strong></td>
+            <td>{{ servicio.destino }}</td>
+        </tr>
+        <tr>
+            <td><strong>Hora inicio:</strong></td>
+            <td>{{ servicio.hora_inicio|default:"" }}</td>
+            <td><strong>Hora fin:</strong></td>
+            <td>{{ servicio.hora_fin|default:"" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Cliente / contratante:</strong></td>
+            <td>{{ servicio.cliente_nombre }}</td>
+            <td><strong>Contacto:</strong></td>
+            <td>{{ servicio.cliente_contacto|default:"" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Valor del servicio:</strong></td>
+            <td colspan="3">$ {{ servicio.valor }}</td>
+        </tr>
+    </table>
+
+    <!-- Datos del vehículo -->
+    <table class="tabla">
+        <tr>
+            <th class="seccion-titulo" colspan="4">Datos del vehículo</th>
+        </tr>
+        <tr>
+            <td><strong>Placa:</strong></td>
+            <td>{{ servicio.vehiculo.placa }}</td>
+            <td><strong>Marca / Línea:</strong></td>
+            <td>{{ servicio.vehiculo.marca }} {{ servicio.vehiculo.linea }}</td>
+        </tr>
+        <tr>
+            <td><strong>Modelo:</strong></td>
+            <td>{{ servicio.vehiculo.modelo }}</td>
+            <td><strong>Capacidad:</strong></td>
+            <td>{{ servicio.vehiculo.capacidad_pasajeros }} pasajeros</td>
+        </tr>
+        <tr>
+            <td><strong>SOAT vence:</strong></td>
+            <td>{{ servicio.vehiculo.soat_vencimiento|date:"d/m/Y" }}</td>
+            <td><strong>Tecnomecánica vence:</strong></td>
+            <td>{{ servicio.vehiculo.tecnomecanica_vencimiento|date:"d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Póliza contractual vence:</strong></td>
+            <td>{{ servicio.vehiculo.poliza_contractual_vencimiento|date:"d/m/Y" }}</td>
+            <td><strong>Póliza extracontractual vence:</strong></td>
+            <td>{{ servicio.vehiculo.poliza_extracontractual_vencimiento|date:"d/m/Y" }}</td>
+        </tr>
+    </table>
+
+    <!-- Datos del conductor -->
+    <table class="tabla">
+        <tr>
+            <th class="seccion-titulo" colspan="4">Datos del conductor</th>
+        </tr>
+        <tr>
+            <td><strong>Nombre:</strong></td>
+            <td>{{ servicio.conductor.nombre_completo }}</td>
+            <td><strong>Documento:</strong></td>
+            <td>{{ servicio.conductor.numero_documento }}</td>
+        </tr>
+        <tr>
+            <td><strong>Teléfono:</strong></td>
+            <td>{{ servicio.conductor.telefono|default:"" }}</td>
+            <td><strong>Correo:</strong></td>
+            <td>{{ servicio.conductor.correo|default:"" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Licencia:</strong></td>
+            <td>{{ servicio.conductor.licencia_categoria }} - {{ servicio.conductor.licencia_numero }}</td>
+            <td><strong>Vence licencia:</strong></td>
+            <td>{{ servicio.conductor.licencia_vencimiento|date:"d/m/Y" }}</td>
+        </tr>
+    </table>
+
+    <!-- Firmas -->
+    <table class="tabla" style="margin-top: 20px;">
+        <tr>
+            <th class="seccion-titulo" colspan="2">Firmas</th>
+        </tr>
+        <tr>
+            <td style="height: 60px; vertical-align: bottom; text-align: center;">
+                _______________________________<br>
+                Representante legal – {{ empresa.nombre }}
+            </td>
+            <td style="height: 60px; vertical-align: bottom; text-align: center;">
+                _______________________________<br>
+                Conductor
+            </td>
+        </tr>
+    </table>
+
+    <p class="small" style="margin-top: 15px;">
+        Generado el {{ hoy|date:"d/m/Y" }} - Este extracto se expide para amparar el servicio descrito, 
+        de acuerdo con la normatividad vigente de transporte especial en Colombia.
+    </p>
+
+</body>
+</html>
