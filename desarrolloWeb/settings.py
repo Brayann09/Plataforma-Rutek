@@ -13,11 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 🔐 SECRET KEY & DEBUG
 # ==============================
 
-# En producción (Render) se debe definir SECRET_KEY en las variables de entorno.
+# En producción (Render) se debe definir DJANGO_SECRET_KEY (o SECRET_KEY).
 # En local, si no hay variable, usa la que ya tenías.
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "django-insecure-jt_&bwofr0+hj3h!q1@(hug7)w7x_011lqp7rv^7rqnn+e38=b"
+SECRET_KEY = (
+    os.environ.get("DJANGO_SECRET_KEY")
+    or os.environ.get("SECRET_KEY")
+    or "django-insecure-jt_&bwofr0+hj3h!q1@(hug7)w7x_011lqp7rv^7rqnn+e38=b"
 )
 
 # DEBUG: en Render pondremos DEBUG=False, en local normalmente True
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ sirve estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -134,7 +136,6 @@ AUTH_PASSWORD_VALIDATORS = [
 #  INTERNACIONALIZACIÓN
 # ==============================
 
-# Puedes dejar 'en-us' si quieres, pero como eres de CO, mejor en español y zona horaria Bogotá
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
 
@@ -147,7 +148,7 @@ USE_TZ = True
 # ==============================
 
 # URL pública de los estáticos
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
 
 # En desarrollo sigues usando inicio/static
 STATICFILES_DIRS = [
@@ -156,6 +157,10 @@ STATICFILES_DIRS = [
 
 # En producción (Render) collectstatic va a dejar todo aquí
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Storage optimizado para producción (solo cuando NO estás en DEBUG)
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # ==============================
@@ -179,4 +184,5 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "ruteksoporte@gmail.com")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "iesokrakwhnqpgjc")  # contraseña de app
 
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+
 
