@@ -174,20 +174,34 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ==============================
 #  📧 CONFIGURACIÓN DE EMAIL
 # ==============================
+# Por defecto usaremos Gmail (para desarrollo/local),
+# pero si la variable EMAIL_BACKEND == "sendgrid",
+# usaremos la integración con SendGrid.
 
-# SIEMPRE usamos SMTP real (porque tú quieres correos reales en Render).
-# En Render vas a configurar:
-#  - EMAIL_HOST_USER
-#  - EMAIL_HOST_PASSWORD
-#  - DEFAULT_FROM_EMAIL (opcional)
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_BACKEND_ENV = os.environ.get("EMAIL_BACKEND", "").lower()
 
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "ruteksoporte@gmail.com")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "iesokrakwhnqpgjc")  # contraseña de app
+if EMAIL_BACKEND_ENV == "sendgrid":
+    # ------ PRODUCCIÓN (Render) con SendGrid ------
+    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "")
 
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+    # Remitente por defecto (debe estar verificado en SendGrid)
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "no-reply@rutek.com")
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
+    # Opcionales para controlar la entrega
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    SENDGRID_ECHO_TO_STDOUT = False
 
+else:
+    # ------ DESARROLLO / LOCALHOST con Gmail ------
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+
+    # Tu Gmail y contraseña de aplicación SOLO en local (.env)
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "ruteksoporte@gmail.com")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "iesokrakwhnqpgjc")
+
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
