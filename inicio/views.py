@@ -14,9 +14,9 @@ from datetime import datetime, date, timedelta
 import random
 from io import BytesIO
 
-from django.db.models import Q  # para búsquedas
+from django.db.models import Q  
 
-from xhtml2pdf import pisa
+
 
 from .models import (
     CodigoVerificacion,
@@ -29,9 +29,7 @@ from .models import (
 from .forms import ConductorForm, VehiculoForm, ServicioForm
 
 
-# =====================================================
-#  HELPER: OBTENER EMPRESA ACTUAL
-# =====================================================
+
 
 def obtener_empresa_actual(user):
     """
@@ -55,9 +53,7 @@ def obtener_empresa_actual(user):
     return empresa_rutek
 
 
-# =====================================================
-#  HELPER: OBTENER ALERTAS DE VENCIMIENTO
-# =====================================================
+
 
 def obtener_alertas_vencimiento(empresa, dias_alerta=30):
     """
@@ -83,7 +79,7 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
     for c in conductores:
         dias = (c.licencia_vencimiento - hoy).days
         estado = 'VENCIDO' if dias < 0 else 'POR_VENCER'
-        dias_texto = abs(dias)  # siempre en positivo para mostrar en tabla
+        dias_texto = abs(dias)  
 
         alertas.append({
             'origen': 'CONDUCTOR',
@@ -91,8 +87,8 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
             'nombre': c.nombre_completo,
             'identificacion': c.numero_documento,
             'fecha': c.licencia_vencimiento,
-            'dias_restantes': dias,   # puede ser negativo
-            'dias_texto': dias_texto, # siempre positivo
+            'dias_restantes': dias,   
+            'dias_texto': dias_texto,
             'estado_alerta': estado,
         })
 
@@ -124,20 +120,22 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
                     'estado_alerta': estado,
                 })
 
-    # Ordenamos por fecha de vencimiento
+   
     alertas.sort(key=lambda a: a['fecha'])
     return alertas
 
 
-# =====================================================
-#  HELPER: RENDERIZAR HTML → PDF (xhtml2pdf)
-# =====================================================
+
 
 def render_to_pdf(template_src, context_dict=None):
     """
     Renderiza una plantilla HTML a PDF usando xhtml2pdf.
     Devuelve los bytes del PDF o None si hubo error.
+    Importamos xhtml2pdf aquí para no cargarlo en cada request.
     """
+    # Import local para evitar consumir memoria en todos los procesos
+    from xhtml2pdf import pisa
+
     if context_dict is None:
         context_dict = {}
     template = get_template(template_src)
@@ -149,18 +147,14 @@ def render_to_pdf(template_src, context_dict=None):
     return result.getvalue()
 
 
-# =====================================================
-#  PÁGINA DE INICIO
-# =====================================================
+
 
 def home(request):
     """Landing / página de inicio."""
     return render(request, 'index.html')
 
 
-# =====================================================
-#  DASHBOARD
-# =====================================================
+
 
 @login_required
 def dashboard_view(request):
@@ -189,10 +183,10 @@ def dashboard_view(request):
         fecha_servicio=hoy
     ).exclude(estado='CANCELADO').count()
 
-    # Alertas de vencimiento (próximos 30 días)
+    # Alertas de vencimiento 
     alertas = obtener_alertas_vencimiento(empresa, dias_alerta=30)
 
-    # Para el dashboard solo mostramos las primeras 5 como texto
+   
     alertas_dashboard = []
     for a in alertas[:5]:
         if a['dias_restantes'] < 0:
@@ -226,9 +220,7 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', context)
 
 
-# =====================================================
-#  VENCIMIENTOS – LISTA DETALLADA
-# =====================================================
+
 
 @login_required
 def vencimientos_lista(request):
@@ -254,9 +246,7 @@ def vencimientos_lista(request):
     return render(request, 'vencimientos/lista.html', context)
 
 
-# =====================================================
-#  MÓDULO CONDUCTORES – LISTA
-# =====================================================
+
 
 @login_required
 def conductores_lista(request):
@@ -293,9 +283,7 @@ def conductores_lista(request):
     return render(request, 'conductores/lista.html', context)
 
 
-# =====================================================
-#  MÓDULO CONDUCTORES – CREAR
-# =====================================================
+
 
 @login_required
 def conductor_crear(request):
@@ -322,9 +310,7 @@ def conductor_crear(request):
     return render(request, 'conductores/form.html', context)
 
 
-# =====================================================
-#  MÓDULO CONDUCTORES – EDITAR
-# =====================================================
+
 
 @login_required
 def conductor_editar(request, pk):
@@ -350,9 +336,7 @@ def conductor_editar(request, pk):
     return render(request, 'conductores/form.html', context)
 
 
-# =====================================================
-#  MÓDULO CONDUCTORES – DETALLE
-# =====================================================
+
 
 @login_required
 def conductor_detalle(request, pk):
@@ -367,9 +351,7 @@ def conductor_detalle(request, pk):
     return render(request, 'conductores/detalle.html', context)
 
 
-# =====================================================
-#  MÓDULO VEHÍCULOS – LISTA
-# =====================================================
+
 
 @login_required
 def vehiculos_lista(request):
@@ -407,9 +389,7 @@ def vehiculos_lista(request):
     return render(request, 'vehiculos/lista.html', context)
 
 
-# =====================================================
-#  MÓDULO VEHÍCULOS – CREAR
-# =====================================================
+
 
 @login_required
 def vehiculo_crear(request):
@@ -436,9 +416,7 @@ def vehiculo_crear(request):
     return render(request, 'vehiculos/form.html', context)
 
 
-# =====================================================
-#  MÓDULO VEHÍCULOS – EDITAR
-# =====================================================
+
 
 @login_required
 def vehiculo_editar(request, pk):
@@ -464,9 +442,7 @@ def vehiculo_editar(request, pk):
     return render(request, 'vehiculos/form.html', context)
 
 
-# =====================================================
-#  MÓDULO VEHÍCULOS – DETALLE
-# =====================================================
+
 
 @login_required
 def vehiculo_detalle(request, pk):
@@ -481,9 +457,7 @@ def vehiculo_detalle(request, pk):
     return render(request, 'vehiculos/detalle.html', context)
 
 
-# =====================================================
-#  MÓDULO SERVICIOS – LISTA
-# =====================================================
+
 
 @login_required
 def servicios_lista(request):
@@ -549,9 +523,7 @@ def servicios_lista(request):
     return render(request, 'servicios/lista.html', context)
 
 
-# =====================================================
-#  MÓDULO SERVICIOS – CREAR
-# =====================================================
+
 
 @login_required
 def servicio_crear(request):
@@ -560,7 +532,7 @@ def servicio_crear(request):
 
     if request.method == 'POST':
         form = ServicioForm(request.POST)
-        # limitar queryset a la empresa
+      
         form.fields['conductor'].queryset = Conductor.objects.filter(empresa=empresa, activo=True)
         form.fields['vehiculo'].queryset = Vehiculo.objects.filter(empresa=empresa, activo=True)
 
@@ -584,9 +556,7 @@ def servicio_crear(request):
     return render(request, 'servicios/form.html', context)
 
 
-# =====================================================
-#  MÓDULO SERVICIOS – EDITAR
-# =====================================================
+
 
 @login_required
 def servicio_editar(request, pk):
@@ -617,9 +587,7 @@ def servicio_editar(request, pk):
     return render(request, 'servicios/form.html', context)
 
 
-# =====================================================
-#  MÓDULO SERVICIOS – DETALLE
-# =====================================================
+
 
 @login_required
 def servicio_detalle(request, pk):
@@ -634,9 +602,7 @@ def servicio_detalle(request, pk):
     return render(request, 'servicios/detalle.html', context)
 
 
-# =====================================================
-#  MÓDULO SERVICIOS – FUEC EN PDF
-# =====================================================
+
 
 @login_required
 def servicio_fuec_pdf(request, pk):
@@ -666,9 +632,7 @@ def servicio_fuec_pdf(request, pk):
     return response
 
 
-# =====================================================
-#  LOGIN
-# =====================================================
+
 
 def login_view(request):
     """
@@ -682,10 +646,10 @@ def login_view(request):
         password = request.POST.get('password', '')
         remember = request.POST.get('remember')
 
-        # Por defecto, asumimos que lo que llega es el username
+        
         username = email_or_user
 
-        # Si coincide con un correo de un usuario, usamos su username real
+        
         user_obj = User.objects.filter(email=email_or_user).first()
         if user_obj:
             username = user_obj.username
@@ -705,27 +669,24 @@ def login_view(request):
 
         # Recordarme
         if remember:
-            request.session.set_expiry(1209600)  # 14 días
+            request.session.set_expiry(1209600)  
         else:
-            request.session.set_expiry(0)        # hasta cerrar navegador
+            request.session.set_expiry(0)        
 
         return redirect('dashboard')
 
     return render(request, 'login.html')
 
 
-# =====================================================
-#  LOGOUT
-# =====================================================
+
+
 
 def logout_view(request):
     logout(request)
     return redirect('home')
 
 
-# =====================================================
-#  REGISTRO
-# =====================================================
+
 
 def generar_codigo():
     """Genera un código de 6 números, ej: 593028."""
@@ -738,8 +699,8 @@ def registro_view(request):
     - Crea usuario inactivo
     - Lo asocia a la empresa por defecto: Rutek Tours
     - Genera código de verificación
-    - Intenta enviar correo HTML.
-      Si el correo falla, activa al usuario directamente (modo demo).
+    - Envía correo HTML. Si el envío falla, se cancela el registro
+      y se borra el usuario (no se activa automáticamente).
     """
     if request.method == 'POST':
         nombre = request.POST.get('nombre', '').strip()
@@ -762,7 +723,7 @@ def registro_view(request):
 
         # Crear usuario
         user = User.objects.create_user(
-            username=email,      # username = correo
+            username=email,     
             email=email,
             password=password,
             first_name=nombre
@@ -770,10 +731,10 @@ def registro_view(request):
         user.is_active = False
         user.save()
 
-        # Asociar a empresa por defecto
+      
         empresa_rutek = obtener_empresa_actual(user)
 
-        # Si la empresa aún no tiene admin, este será el admin
+       
         if empresa_rutek.administrador is None:
             empresa_rutek.administrador = user
             empresa_rutek.save()
@@ -787,14 +748,14 @@ def registro_view(request):
             es_admin_empresa=es_admin
         )
 
-        # Crear / actualizar código de verificación
+        
         codigo = generar_codigo()
         CodigoVerificacion.objects.update_or_create(
             user=user,
             defaults={'codigo': codigo, 'usado': False}
         )
 
-        # Enviar correo con plantilla HTML
+        
         asunto = "Código de verificación - Rutek"
         context = {
             'nombre': nombre,
@@ -815,35 +776,30 @@ def registro_view(request):
         email_message.attach_alternative(html_body, "text/html")
 
         try:
-            # Puede fallar en Render si hay problemas con Gmail
             email_message.send()
-
-            # Guardar usuario pendiente en sesión SOLO si se envió el correo
-            request.session['pending_user_id'] = user.id
-            messages.success(request, 'Te enviamos un código de verificación a tu correo.')
-            return redirect('verificacion')
-
         except Exception as e:
-            # Se verá en los logs de Render
+          
             print(f"Error enviando correo de verificación: {e}")
 
-            # Activamos al usuario directamente para no bloquear la app (modo demo)
-            user.is_active = True
-            user.save()
+            
+            user.delete()
 
-            messages.warning(
+            messages.error(
                 request,
-                'Tu usuario se creó correctamente, pero no pudimos enviar el correo de '
-                'verificación. Por ser una demo, tu cuenta fue activada automáticamente.'
+                'No pudimos enviar el correo de verificación. '
+                'Por favor intenta nuevamente más tarde.'
             )
-            return redirect('login')
+            return render(request, 'registro.html')
+
+        
+        request.session['pending_user_id'] = user.id
+        messages.success(request, 'Te enviamos un código de verificación a tu correo.')
+        return redirect('verificacion')
 
     return render(request, 'registro.html')
 
 
-# =====================================================
-#  VERIFICACIÓN DE CORREO
-# =====================================================
+
 
 def verificacion_view(request):
     """
@@ -874,15 +830,15 @@ def verificacion_view(request):
             messages.error(request, 'Código incorrecto o ya utilizado.')
             return render(request, 'verificacion.html', {'email': user.email})
 
-        # Marcar código como usado
+      
         registro_codigo.usado = True
         registro_codigo.save()
 
-        # Activar usuario
+       
         user.is_active = True
         user.save()
 
-        # Limpiar sesión
+       
         del request.session['pending_user_id']
 
         # Login automático
@@ -894,9 +850,7 @@ def verificacion_view(request):
     return render(request, 'verificacion.html', {'email': user.email})
 
 
-# =====================================================
-#  RECUPERAR CONTRASEÑA – PASO 1 (PEDIR CORREO)
-# =====================================================
+
 
 def password_reset_request(request):
     """
@@ -915,14 +869,14 @@ def password_reset_request(request):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            # Por seguridad, no revelamos si existe o no
+            
             messages.success(
                 request,
                 'Si el correo está registrado, te enviaremos un código de recuperación.'
             )
             return redirect('password_reset_request')
 
-        # Reutilizamos generar_codigo + CodigoVerificacion
+        
         codigo = generar_codigo()
         CodigoVerificacion.objects.update_or_create(
             user=user,
@@ -947,7 +901,17 @@ def password_reset_request(request):
             to=[email],
         )
         email_message.attach_alternative(html_body, "text/html")
-        email_message.send()
+
+        try:
+            email_message.send()
+        except Exception as e:
+            print(f"Error enviando correo de recuperación: {e}")
+            messages.error(
+                request,
+                'No pudimos enviar el correo de recuperación. '
+                'Intenta nuevamente más tarde.'
+            )
+            return render(request, 'password_reset_request.html')
 
         request.session['reset_user_id'] = user.id
 
@@ -960,9 +924,7 @@ def password_reset_request(request):
     return render(request, 'password_reset_request.html')
 
 
-# =====================================================
-#  RECUPERAR CONTRASEÑA – PASO 2 (CÓDIGO + NUEVA CLAVE)
-# =====================================================
+
 
 def password_reset_confirm(request):
     """
@@ -1016,4 +978,5 @@ def password_reset_confirm(request):
         return redirect('login')
 
     return render(request, 'password_reset_confirm.html', {'email': user.email})
+
 

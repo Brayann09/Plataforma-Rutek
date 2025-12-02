@@ -11,7 +11,7 @@
 html,body{margin:0;padding:0}
 body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
 
-/* ===== Fondo con degradado + patrón más claro ===== */
+
 .auth-bg{
   position:fixed; inset:0; z-index:-2;
   background:
@@ -19,26 +19,26 @@ body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;co
 }
 .pattern{
   position:fixed; inset:0; z-index:-1;
-  opacity:.12; /* más visible que antes */
+  opacity:.12;
   background-image: url('../img/Rutek-logo.png');
   background-size: 110px;
   background-repeat: repeat;
   animation: slideBg 38s linear infinite;
-  filter: grayscale(50%) brightness(10%); /* aclara logos */
+  filter: grayscale(50%) brightness(10%); 
 }
 @keyframes slideBg{
   from{ background-position: 0 0; }
   to  { background-position: -800px 600px; }
 }
 
-/* ===== Layout del área de autenticación ===== */
+
 .auth-wrap{
-  min-height:calc(100dvh - 64px); /* resta navbar */
+  min-height:calc(100dvh - 64px); 
   display:grid; place-items:center;
   padding: clamp(24px, 4vw, 48px) 18px;
 }
 
-/* Tarjeta con glassmorphism */
+
 .auth-card{
   width:min(96%, 520px);
   backdrop-filter: blur(10px);
@@ -49,12 +49,12 @@ body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;co
   padding: 26px 22px 20px;
 }
 
-/* Cabezera: logo más grande, sin subtítulo */
+
 .card-head{ text-align:center; padding:6px 8px 0 }
 .logo-head{ height:150px; width:auto; filter: drop-shadow(0 8px 22px rgba(15,139,217,.28)) }
 .card-head h1{ margin:.6rem 0 .2rem; font-size: clamp(20px, 3.2vw, 26px); font-weight:800; letter-spacing:.2px }
 
-/* Formulario */
+
 .auth-form{ margin-top: 8px }
 .label{ display:block; font-weight:700; font-size:14px; margin:12px 0 6px; color:#0a2a52 }
 .field{ position:relative }
@@ -84,30 +84,30 @@ body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;co
 
 .foot-note{ margin:12px 2px 2px; text-align:center; color:#3b4a66; font-size:14px }
 
-/* Responsive */
+
 @media (max-width: 560px){
   .auth-card{ padding: 20px 16px 16px; border-radius:18px; width:min(96%, 500px) }
   .logo-head{ height:64px }
 }
 
-/* Solo LOGIN */
+
 body.login-page .navbar .nav-row{
-  /* override a lo global */
-  min-height: 48px !important;   /* si en global usan min-height, esto manda */
-  height: 48px !important;       /* por si acaso */
+
+  min-height: 48px !important;   
+  height: 48px !important;       
   padding: 4px 0 !important;
-  grid-template-columns: 140px 1fr; /* si usas Grid en la navbar */
+  grid-template-columns: 140px 1fr; 
 }
 
-/* el logo grande puede forzar altura; bájalo aquí */
+
 body.login-page .brand-logo{
   height: 80px !important;
   width: auto;
 }
 
-/* (opcional) alinea el link “Volver” al centro vertical */
+
 body.login-page .nav-links a{
-  line-height: 40px;             /* mismo alto que el botón */
+  line-height: 40px;             
   display: inline-flex;
   align-items: center;
   height: 40px;

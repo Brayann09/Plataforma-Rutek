@@ -9,24 +9,19 @@ from urllib.parse import urlparse
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ==============================
-# 🔐 SECRET KEY & DEBUG
-# ==============================
 
-# En producción (Render) se debe definir DJANGO_SECRET_KEY (o SECRET_KEY).
-# En local, si no hay variable, usa la que ya tenías.
+
+
 SECRET_KEY = (
     os.environ.get("DJANGO_SECRET_KEY")
     or os.environ.get("SECRET_KEY")
     or "django-insecure-jt_&bwofr0+hj3h!q1@(hug7)w7x_011lqp7rv^7rqnn+e38=b"
 )
 
-# DEBUG: en Render pondremos DEBUG=False, en local normalmente True
+
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-# ==============================
-# 🌍 ALLOWED_HOSTS / CSRF
-# ==============================
+
 
 # Render expone el host en RENDER_EXTERNAL_HOSTNAME
 RENDER_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
@@ -39,9 +34,8 @@ else:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
-# ==============================
+
 #  APPS
-# ==============================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,7 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ sirve estáticos en producción
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,22 +79,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'desarrolloWeb.wsgi.application'
 
 
-# ==============================
-#  🔵 BASE DE DATOS
-# ==============================
-# En Render usaremos DATABASE_URL (Postgres gestionado).
+
+# En Render usamos DATABASE_URL (Postgres gestionado).
 # En local, si no está DATABASE_URL, se usa tu configuración actual.
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # Ejemplo de DATABASE_URL:
-    # postgres://usuario:password@host:puerto/nombre_bd
+    
     parsed = urlparse(DATABASE_URL)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed.path[1:],  # quitar el primer '/'
+            "NAME": parsed.path[1:],  
             "USER": parsed.username,
             "PASSWORD": parsed.password,
             "HOST": parsed.hostname,
@@ -108,7 +99,7 @@ if DATABASE_URL:
         }
     }
 else:
-    # Config LOCAL (tal como la tenías)
+   
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -121,9 +112,8 @@ else:
     }
 
 
-# ==============================
+
 #  PASSWORD VALIDATION
-# ==============================
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -133,9 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# ==============================
-#  INTERNACIONALIZACIÓN
-# ==============================
+
 
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
@@ -144,9 +132,9 @@ USE_I18N = True
 USE_TZ = True
 
 
-# ==============================
+
 #  ARCHIVOS ESTÁTICOS
-# ==============================
+
 
 # URL pública de los estáticos
 STATIC_URL = "/static/"
@@ -156,25 +144,22 @@ STATICFILES_DIRS = [
     BASE_DIR / "inicio" / "static",
 ]
 
-# En producción (Render) collectstatic va a dejar todo aquí
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Storage optimizado para producción (solo cuando NO estás en DEBUG)
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-# ==============================
-#  DEFAULT AUTO FIELD
-# ==============================
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# ==============================
-#  📧 CONFIGURACIÓN DE EMAIL
-# ==============================
-# Por defecto usaremos Gmail (para desarrollo/local),
+
+# CONFIGURACIÓN DE EMAIL
+
+# Por defecto usamos Gmail (para desarrollo/local),
 # pero si la variable EMAIL_BACKEND == "sendgrid",
 # usaremos la integración con SendGrid.
 
@@ -189,7 +174,6 @@ if EMAIL_BACKEND_ENV == "sendgrid":
     EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "no-reply@rutek.com")
     DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
-    # Opcionales para controlar la entrega
     SENDGRID_SANDBOX_MODE_IN_DEBUG = False
     SENDGRID_ECHO_TO_STDOUT = False
 
@@ -200,7 +184,7 @@ else:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
 
-    # Tu Gmail y contraseña de aplicación SOLO en local (.env)
+    
     EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "ruteksoporte@gmail.com")
     EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "iesokrakwhnqpgjc")
 

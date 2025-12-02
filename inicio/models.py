@@ -2,10 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# =====================================================
-#  EMPRESAS
-# =====================================================
 
+#  EMPRESAS
 class Empresa(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     nit = models.CharField(max_length=20, unique=True)
@@ -43,10 +41,8 @@ class EmpresaUsuario(models.Model):
         return f'{self.user.username} → {self.empresa.nombre}'
 
 
-# =====================================================
-#  CÓDIGO DE VERIFICACIÓN
-# =====================================================
 
+#  CÓDIGO DE VERIFICACIÓN
 class CodigoVerificacion(models.Model):
     user = models.OneToOneField(
         User,
@@ -61,10 +57,8 @@ class CodigoVerificacion(models.Model):
         return f"Código de verificación para {self.user.username}"
 
 
-# =====================================================
-#  CONDUCTORES
-# =====================================================
 
+#  CONDUCTORES
 class Conductor(models.Model):
     empresa = models.ForeignKey(
         Empresa,
@@ -83,7 +77,7 @@ class Conductor(models.Model):
     telefono = models.CharField(max_length=20, blank=True)
     correo = models.EmailField(blank=True)
 
-    licencia_categoria = models.CharField(max_length=5)  # Ej: C1, C2, C3
+    licencia_categoria = models.CharField(max_length=5) 
     licencia_numero = models.CharField(max_length=20)
     licencia_vencimiento = models.DateField(blank=True, null=True)
 
@@ -96,10 +90,8 @@ class Conductor(models.Model):
         return self.nombre_completo
 
 
-# =====================================================
-#  VEHÍCULOS
-# =====================================================
 
+#  VEHÍCULOS
 class Vehiculo(models.Model):
     empresa = models.ForeignKey(
         Empresa,
@@ -110,7 +102,7 @@ class Vehiculo(models.Model):
     placa = models.CharField(max_length=10, unique=True)
     marca = models.CharField(max_length=50)
     linea = models.CharField(max_length=50, blank=True)
-    modelo = models.PositiveIntegerField()  # año modelo, ej: 2026
+    modelo = models.PositiveIntegerField()  
 
     capacidad_pasajeros = models.PositiveIntegerField(default=0)
 
@@ -128,10 +120,8 @@ class Vehiculo(models.Model):
         return f"{self.placa} - {self.marca} {self.linea}"
 
 
-# =====================================================
-#  SERVICIOS / VIAJES
-# =====================================================
 
+#  SERVICIOS / VIAJES
 ESTADOS_SERVICIO = [
     ('PROGRAMADO', 'Programado'),
     ('EN_CURSO', 'En curso'),
@@ -147,7 +137,7 @@ class Servicio(models.Model):
         related_name='servicios'
     )
 
-    # Usamos string para evitar problemas de orden de definición
+   
     conductor = models.ForeignKey(
         'Conductor',
         on_delete=models.PROTECT,

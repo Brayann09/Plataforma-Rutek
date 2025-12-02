@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Estilos globales (navbar igual que inicio) -->
+ 
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  <!-- Estilos específicos del login -->
+  
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 
@@ -45,7 +45,7 @@
         <h1 id="authTitle">BIENVENIDOS A <strong>RUTEK</strong></h1>
       </div>
 
-      <!-- Mensajes (errores, avisos, etc.) -->
+      
       {% if messages %}
       <div class="messages">
         {% for message in messages %}
