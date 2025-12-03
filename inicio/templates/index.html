@@ -12,39 +12,34 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  
+  <!-- Estilos -->
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
- 
- 
-
+</head>
 <body>
   <!-- NAVBAR -->
   <header class="navbar">
     <div class="container">
       <div class="nav-row">
-        <a class="brand" href="/" aria-label="Inicio Rutek">
-          
+        <a class="brand" href="{% url 'home' %}" aria-label="Inicio Rutek">
           <img src="{% static 'img/Rutek-logo.png' %}" alt="Rutek" class="brand-logo">
         </a>
-       <nav class="nav-links">
-  <a href="#about">Sobre nosotros</a>
-  <a href="#features">Funciones</a>
+        <nav class="nav-links">
+          <a href="#about">Sobre nosotros</a>
+          <a href="#features">Funciones</a>
 
- 
-  <div class="dropdown">
-    <a href="#empresas" class="dropbtn">Empresas ▾</a>
-    <div class="dropdown-content">
-      <a href="#">TransAndina</a>
-      <a href="#">Rutek Tours</a>
-      <a href="#">ServiExpress</a>
-      <a href="#">LogiTrack</a>
-    </div>
-  </div>
+          <div class="dropdown">
+            <a href="#empresas" class="dropbtn">Empresas ▾</a>
+            <div class="dropdown-content">
+              <a href="#">TransAndina</a>
+              <a href="#">Rutek Tours</a>
+              <a href="#">ServiExpress</a>
+              <a href="#">LogiTrack</a>
+            </div>
+          </div>
 
-  <a class="cta" href="{% url 'login' %}">Iniciar Sesión</a>
-</nav>
-
+          <a href="{% url 'contacto' %}">Contáctanos</a>
+          <a class="cta" href="{% url 'login' %}">Iniciar Sesión</a>
+        </nav>
       </div>
     </div>
   </header>
@@ -55,14 +50,15 @@
       <div>
         <div class="chip">Transporte especial y turístico</div>
         <h1>Gestiona tu empresa de transporte con Rutek</h1>
-        <p class="lead">Centraliza conductores, vehículos y contratos FUEC. Recibe alertas de vencimientos y controla toda tu operación desde una sola plataforma.</p>
+        <p class="lead">
+          Centraliza conductores, vehículos y contratos FUEC. Recibe alertas de vencimientos y controla toda tu operación desde una sola plataforma.
+        </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#empresas">Ver empresas aliadas</a>
           <a class="btn btn-ghost" href="#features">Explorar funciones</a>
         </div>
       </div>
 
-      
       <div class="hero-texts">
         <div id="heroMessages" class="messages">
           <span>GESTIONA TU EMPRESA FÁCIL Y RÁPIDO CON NOSOTROS</span>
@@ -74,11 +70,13 @@
     </div>
   </section>
 
- 
+  <!-- ABOUT -->
   <section id="about">
     <div class="container">
       <h2 class="section-title">¿Qué es Rutek?</h2>
-      <p class="section-sub">Somos una plataforma enfocada en empresas de transporte especial y de turismo. Te ayudamos a gestionar conductores, vehículos y contratos de forma eficiente y conforme a la normativa colombiana.</p>
+      <p class="section-sub">
+        Somos una plataforma enfocada en empresas de transporte especial y de turismo. Te ayudamos a gestionar conductores, vehículos y contratos de forma eficiente y conforme a la normativa colombiana.
+      </p>
       <div class="grid cols-3">
         <div class="card">
           <div class="chip">FUEC en minutos</div>
@@ -110,34 +108,43 @@
     </div>
   </section>
 
-  
+  <!-- FEATURES -->
   <section id="features">
     <div class="container">
       <h2 class="section-title">Todo lo que necesitas para operar</h2>
       <div class="grid cols-3">
-        <div class="card"><h3>Roles y permisos</h3><p>Administra accesos por rol: administrador, empresa, conductor.</p></div>
-        <div class="card"><h3>Evidencias y adjuntos</h3><p>Sube pólizas, licencias y documentos de soporte vinculados a cada entidad.</p></div>
-        <div class="card"><h3>Reportes y KPIs</h3><p>Monitorea tu operación con métricas clave y exportaciones rápidas.</p></div>
+        <div class="card">
+          <h3>Roles y permisos</h3>
+          <p>Administra accesos por rol: administrador, empresa, conductor.</p>
+        </div>
+        <div class="card">
+          <h3>Evidencias y adjuntos</h3>
+          <p>Sube pólizas, licencias y documentos de soporte vinculados a cada entidad.</p>
+        </div>
+        <div class="card">
+          <h3>Reportes y KPIs</h3>
+          <p>Monitorea tu operación con métricas clave y exportaciones rápidas.</p>
+        </div>
       </div>
     </div>
   </section>
 
-
+  <!-- CTA CONTACTO -->
   <section id="contacto">
     <div class="container">
       <div class="cta-band">
         <h3>¿Listo para digitalizar tu transporte?</h3>
-        <a class="btn btn-primary" href="#">Contactanos</a>
+        <a class="btn btn-primary" href="{% url 'contacto' %}">Contáctanos</a>
       </div>
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <div class="container">
       © <span id="year"></span> Rutek — Plataforma para transporte especial y turístico.
     </div>
   </footer>
-
 
   <script src="{% static 'js/app.js' %}"></script>
   <script>
@@ -145,3 +152,4 @@
   </script>
 </body>
 </html>
+

@@ -14,9 +14,7 @@ from datetime import datetime, date, timedelta
 import random
 from io import BytesIO
 
-from django.db.models import Q  
-
-
+from django.db.models import Q
 
 from .models import (
     CodigoVerificacion,
@@ -27,8 +25,6 @@ from .models import (
     Servicio,
 )
 from .forms import ConductorForm, VehiculoForm, ServicioForm
-
-
 
 
 def obtener_empresa_actual(user):
@@ -51,8 +47,6 @@ def obtener_empresa_actual(user):
         }
     )
     return empresa_rutek
-
-
 
 
 def obtener_alertas_vencimiento(empresa, dias_alerta=30):
@@ -79,7 +73,7 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
     for c in conductores:
         dias = (c.licencia_vencimiento - hoy).days
         estado = 'VENCIDO' if dias < 0 else 'POR_VENCER'
-        dias_texto = abs(dias)  
+        dias_texto = abs(dias)
 
         alertas.append({
             'origen': 'CONDUCTOR',
@@ -87,7 +81,7 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
             'nombre': c.nombre_completo,
             'identificacion': c.numero_documento,
             'fecha': c.licencia_vencimiento,
-            'dias_restantes': dias,   
+            'dias_restantes': dias,
             'dias_texto': dias_texto,
             'estado_alerta': estado,
         })
@@ -120,11 +114,8 @@ def obtener_alertas_vencimiento(empresa, dias_alerta=30):
                     'estado_alerta': estado,
                 })
 
-   
     alertas.sort(key=lambda a: a['fecha'])
     return alertas
-
-
 
 
 def render_to_pdf(template_src, context_dict=None):
@@ -147,13 +138,68 @@ def render_to_pdf(template_src, context_dict=None):
     return result.getvalue()
 
 
-
-
 def home(request):
     """Landing / página de inicio."""
     return render(request, 'index.html')
 
 
+def contacto(request):
+    """
+    Formulario de contacto público.
+    Envía un correo a ruteksoporte@gmail.com.
+    """
+    if request.method == "POST":
+        nombre = request.POST.get("nombre", "").strip()
+        email = request.POST.get("email", "").strip()
+        asunto = request.POST.get("asunto", "").strip() or "Nuevo mensaje de contacto"
+        mensaje = request.POST.get("mensaje", "").strip()
+
+        # Validación básica
+        if not nombre or not email or not mensaje:
+            messages.error(request, "Todos los campos son obligatorios.")
+            return render(
+                request,
+                "contacto.html",
+                {
+                    "nombre": nombre,
+                    "email": email,
+                    "asunto": asunto,
+                    "mensaje": mensaje,
+                },
+            )
+
+        # Cuerpo del correo que recibirá soporte
+        cuerpo = (
+            "Nuevo mensaje desde el formulario de contacto de Rutek\n\n"
+            f"Nombre: {nombre}\n"
+            f"Correo: {email}\n"
+            f"Asunto: {asunto}\n\n"
+            f"Mensaje:\n{mensaje}\n"
+        )
+
+        from_email = getattr(settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER)
+
+        email_message = EmailMultiAlternatives(
+            subject=f"[Rutek] {asunto}",
+            body=cuerpo,
+            from_email=from_email,
+            to=["ruteksoporte@gmail.com"],
+            reply_to=[email] if email else None,
+        )
+
+        try:
+            email_message.send()
+            messages.success(request, "Tu mensaje fue enviado correctamente.")
+            return redirect("contacto")
+        except Exception as e:
+            print(f"Error enviando correo de contacto: {e}")
+            messages.error(
+                request,
+                "Ocurrió un error enviando el mensaje. Inténtalo nuevamente más tarde.",
+            )
+
+    # GET o si hubo error en el envío
+    return render(request, "contacto.html")
 
 
 @login_required
@@ -183,10 +229,9 @@ def dashboard_view(request):
         fecha_servicio=hoy
     ).exclude(estado='CANCELADO').count()
 
-    # Alertas de vencimiento 
+    # Alertas de vencimiento
     alertas = obtener_alertas_vencimiento(empresa, dias_alerta=30)
 
-   
     alertas_dashboard = []
     for a in alertas[:5]:
         if a['dias_restantes'] < 0:
@@ -220,8 +265,6 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', context)
 
 
-
-
 @login_required
 def vencimientos_lista(request):
     """
@@ -244,8 +287,6 @@ def vencimientos_lista(request):
         'dias_alerta': dias_alerta,
     }
     return render(request, 'vencimientos/lista.html', context)
-
-
 
 
 @login_required
@@ -283,8 +324,6 @@ def conductores_lista(request):
     return render(request, 'conductores/lista.html', context)
 
 
-
-
 @login_required
 def conductor_crear(request):
     """Crea un nuevo conductor asociado a la empresa actual."""
@@ -308,8 +347,6 @@ def conductor_crear(request):
         'conductor': None,
     }
     return render(request, 'conductores/form.html', context)
-
-
 
 
 @login_required
@@ -336,8 +373,6 @@ def conductor_editar(request, pk):
     return render(request, 'conductores/form.html', context)
 
 
-
-
 @login_required
 def conductor_detalle(request, pk):
     """Muestra el detalle de un conductor de la empresa actual."""
@@ -349,8 +384,6 @@ def conductor_detalle(request, pk):
         'conductor': conductor,
     }
     return render(request, 'conductores/detalle.html', context)
-
-
 
 
 @login_required
@@ -389,8 +422,6 @@ def vehiculos_lista(request):
     return render(request, 'vehiculos/lista.html', context)
 
 
-
-
 @login_required
 def vehiculo_crear(request):
     """Crea un nuevo vehículo asociado a la empresa actual."""
@@ -414,8 +445,6 @@ def vehiculo_crear(request):
         'vehiculo': None,
     }
     return render(request, 'vehiculos/form.html', context)
-
-
 
 
 @login_required
@@ -442,8 +471,6 @@ def vehiculo_editar(request, pk):
     return render(request, 'vehiculos/form.html', context)
 
 
-
-
 @login_required
 def vehiculo_detalle(request, pk):
     """Muestra el detalle de un vehículo de la empresa actual."""
@@ -455,8 +482,6 @@ def vehiculo_detalle(request, pk):
         'vehiculo': vehiculo,
     }
     return render(request, 'vehiculos/detalle.html', context)
-
-
 
 
 @login_required
@@ -523,8 +548,6 @@ def servicios_lista(request):
     return render(request, 'servicios/lista.html', context)
 
 
-
-
 @login_required
 def servicio_crear(request):
     """Crea un nuevo servicio asociado a la empresa actual."""
@@ -532,7 +555,7 @@ def servicio_crear(request):
 
     if request.method == 'POST':
         form = ServicioForm(request.POST)
-      
+
         form.fields['conductor'].queryset = Conductor.objects.filter(empresa=empresa, activo=True)
         form.fields['vehiculo'].queryset = Vehiculo.objects.filter(empresa=empresa, activo=True)
 
@@ -554,8 +577,6 @@ def servicio_crear(request):
         'servicio': None,
     }
     return render(request, 'servicios/form.html', context)
-
-
 
 
 @login_required
@@ -587,8 +608,6 @@ def servicio_editar(request, pk):
     return render(request, 'servicios/form.html', context)
 
 
-
-
 @login_required
 def servicio_detalle(request, pk):
     """Muestra el detalle de un servicio de la empresa actual."""
@@ -600,8 +619,6 @@ def servicio_detalle(request, pk):
         'servicio': servicio,
     }
     return render(request, 'servicios/detalle.html', context)
-
-
 
 
 @login_required
@@ -632,8 +649,6 @@ def servicio_fuec_pdf(request, pk):
     return response
 
 
-
-
 def login_view(request):
     """
     Login SIN selector de empresa.
@@ -646,10 +661,8 @@ def login_view(request):
         password = request.POST.get('password', '')
         remember = request.POST.get('remember')
 
-        
         username = email_or_user
 
-        
         user_obj = User.objects.filter(email=email_or_user).first()
         if user_obj:
             username = user_obj.username
@@ -669,23 +682,18 @@ def login_view(request):
 
         # Recordarme
         if remember:
-            request.session.set_expiry(1209600)  
+            request.session.set_expiry(1209600)
         else:
-            request.session.set_expiry(0)        
+            request.session.set_expiry(0)
 
         return redirect('dashboard')
 
     return render(request, 'login.html')
 
 
-
-
-
 def logout_view(request):
     logout(request)
     return redirect('home')
-
-
 
 
 def generar_codigo():
@@ -723,7 +731,7 @@ def registro_view(request):
 
         # Crear usuario
         user = User.objects.create_user(
-            username=email,     
+            username=email,
             email=email,
             password=password,
             first_name=nombre
@@ -731,10 +739,8 @@ def registro_view(request):
         user.is_active = False
         user.save()
 
-      
         empresa_rutek = obtener_empresa_actual(user)
 
-       
         if empresa_rutek.administrador is None:
             empresa_rutek.administrador = user
             empresa_rutek.save()
@@ -748,14 +754,12 @@ def registro_view(request):
             es_admin_empresa=es_admin
         )
 
-        
         codigo = generar_codigo()
         CodigoVerificacion.objects.update_or_create(
             user=user,
             defaults={'codigo': codigo, 'usado': False}
         )
 
-        
         asunto = "Código de verificación - Rutek"
         context = {
             'nombre': nombre,
@@ -778,10 +782,8 @@ def registro_view(request):
         try:
             email_message.send()
         except Exception as e:
-          
             print(f"Error enviando correo de verificación: {e}")
 
-            
             user.delete()
 
             messages.error(
@@ -791,14 +793,11 @@ def registro_view(request):
             )
             return render(request, 'registro.html')
 
-        
         request.session['pending_user_id'] = user.id
         messages.success(request, 'Te enviamos un código de verificación a tu correo.')
         return redirect('verificacion')
 
     return render(request, 'registro.html')
-
-
 
 
 def verificacion_view(request):
@@ -830,15 +829,12 @@ def verificacion_view(request):
             messages.error(request, 'Código incorrecto o ya utilizado.')
             return render(request, 'verificacion.html', {'email': user.email})
 
-      
         registro_codigo.usado = True
         registro_codigo.save()
 
-       
         user.is_active = True
         user.save()
 
-       
         del request.session['pending_user_id']
 
         # Login automático
@@ -848,8 +844,6 @@ def verificacion_view(request):
         return redirect('dashboard')
 
     return render(request, 'verificacion.html', {'email': user.email})
-
-
 
 
 def password_reset_request(request):
@@ -869,14 +863,12 @@ def password_reset_request(request):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            
             messages.success(
                 request,
                 'Si el correo está registrado, te enviaremos un código de recuperación.'
             )
             return redirect('password_reset_request')
 
-        
         codigo = generar_codigo()
         CodigoVerificacion.objects.update_or_create(
             user=user,
@@ -922,8 +914,6 @@ def password_reset_request(request):
         return redirect('password_reset_confirm')
 
     return render(request, 'password_reset_request.html')
-
-
 
 
 def password_reset_confirm(request):
@@ -978,5 +968,6 @@ def password_reset_confirm(request):
         return redirect('login')
 
     return render(request, 'password_reset_confirm.html', {'email': user.email})
+
 
 
