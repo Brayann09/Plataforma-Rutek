@@ -91,24 +91,47 @@ body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;co
 }
 
 
-body.login-page .navbar .nav-row{
+/* ==========  NAVBAR LOGIN  ========== */
 
-  min-height: 48px !important;   
-  height: 48px !important;       
+body.login-page .navbar .nav-row {
+  min-height: 48px !important;
+  height: 48px !important;
   padding: 4px 0 !important;
   grid-template-columns: 140px 1fr; 
 }
 
-
+/* Logo */
 body.login-page .brand-logo{
   height: 80px !important;
   width: auto;
 }
 
+/* CONTENEDOR DE LOS ENLACES */
+body.login-page .nav-links {
+  display: flex !important;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.4rem;
+}
 
+/* ESTILO DE TODOS LOS LINKS */
 body.login-page .nav-links a{
-  line-height: 40px;             
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   height: 40px;
+  line-height: 40px;
+  padding: 0 10px;
+  color: #ffffff !important;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+/* Botón clima */
+body.login-page .nav-links .nav-weather {
+  background: rgba(255,255,255,0.18);
+}
+
+body.login-page .nav-links .nav-weather:hover{
+  background: rgba(255,255,255,0.32);
 }

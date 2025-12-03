@@ -12,38 +12,41 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  
+  <!-- Estilos -->
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
- 
- 
+</head>
 
 <body>
   <!-- NAVBAR -->
   <header class="navbar">
     <div class="container">
       <div class="nav-row">
+
         <a class="brand" href="/" aria-label="Inicio Rutek">
-          
           <img src="{% static 'img/Rutek-logo.png' %}" alt="Rutek" class="brand-logo">
         </a>
-       <nav class="nav-links">
-  <a href="#about">Sobre nosotros</a>
-  <a href="#features">Funciones</a>
 
- 
-  <div class="dropdown">
-    <a href="#empresas" class="dropbtn">Empresas ▾</a>
-    <div class="dropdown-content">
-      <a href="#">TransAndina</a>
-      <a href="#">Rutek Tours</a>
-      <a href="#">ServiExpress</a>
-      <a href="#">LogiTrack</a>
-    </div>
-  </div>
+        <nav class="nav-links">
+          <a href="#about">Sobre nosotros</a>
+          <a href="#features">Funciones</a>
 
-  <a class="cta" href="{% url 'login' %}">Iniciar Sesión</a>
-</nav>
+          <div class="dropdown">
+            <a href="#empresas" class="dropbtn">Empresas ▾</a>
+            <div class="dropdown-content">
+              <a href="#">TransAndina</a>
+              <a href="#">Rutek Tours</a>
+              <a href="#">ServiExpress</a>
+              <a href="#">LogiTrack</a>
+            </div>
+          </div>
+
+          <!-- 🔥 BOTÓN A EL TIEMPO -->
+          <a href="https://www.eltiempo.com" target="_blank" class="weather-btn">
+            El Tiempo
+          </a>
+
+          <a class="cta" href="{% url 'login' %}">Iniciar Sesión</a>
+        </nav>
 
       </div>
     </div>
@@ -62,7 +65,6 @@
         </div>
       </div>
 
-      
       <div class="hero-texts">
         <div id="heroMessages" class="messages">
           <span>GESTIONA TU EMPRESA FÁCIL Y RÁPIDO CON NOSOTROS</span>
@@ -74,7 +76,7 @@
     </div>
   </section>
 
- 
+  <!-- ABOUT -->
   <section id="about">
     <div class="container">
       <h2 class="section-title">¿Qué es Rutek?</h2>
@@ -110,7 +112,7 @@
     </div>
   </section>
 
-  
+  <!-- FEATURES -->
   <section id="features">
     <div class="container">
       <h2 class="section-title">Todo lo que necesitas para operar</h2>
@@ -122,23 +124,25 @@
     </div>
   </section>
 
-
+  <!-- CONTACTO -->
   <section id="contacto">
     <div class="container">
       <div class="cta-band">
         <h3>¿Listo para digitalizar tu transporte?</h3>
-        <a class="btn btn-primary" href="#">Contactanos</a>
+        <!-- Botón que NO hace nada -->
+        <a class="btn btn-primary" href="#" onclick="return false;">Contáctanos</a>
       </div>
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <div class="container">
       © <span id="year"></span> Rutek — Plataforma para transporte especial y turístico.
     </div>
   </footer>
 
-
+  <!-- Scripts -->
   <script src="{% static 'js/app.js' %}"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
