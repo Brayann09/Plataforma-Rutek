@@ -130,6 +130,9 @@ body{
   .brand::after{height:30%;}
   .nav-links{gap:.8rem;}
   .nav-links a, .cta{height:36px;}
+  .nav-links{
+    border: 2px solid red !important;
+  }
 }
 
 

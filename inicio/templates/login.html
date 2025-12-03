@@ -25,12 +25,20 @@
         <a class="brand" href="{% url 'home' %}" aria-label="Inicio Rutek">
           <img src="{% static 'img/Rutek-logo.png' %}" alt="Rutek" class="brand-logo">
         </a>
+
         <nav class="nav-links">
           <a href="{% url 'home' %}">← Volver</a>
+
+          <!-- 🔥 NUEVO BOTÓN DEL CLIMA -->
+          <a href="https://www.eltiempo.com/clima" target="_blank" class="nav-weather">
+            Clima
+          </a>
         </nav>
+
       </div>
     </div>
   </header>
+
 
   <!-- Fondo -->
   <div class="auth-bg">
